@@ -14,8 +14,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "obfuscator.helloWorld",
-        "title": "Hello World"
+          "command": "obfuscate.start",
+          "title": "Obfuscate"
+      },
+      {
+          "command": "obfuscate.reset",
+          "title": "Obfuscate: reset"
       }
     ]
   },
