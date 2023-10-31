@@ -1,8 +1,8 @@
-# Obfuscate Text Extension for VS Code
+# Obfuscator Extension for VS Code
 
 ## Overview
 
-Ever wanted to paste some text into an AI program, share a code snippet, or post on a forum, but it contained keywords or sensitive information you'd rather keep private? With the Obfuscate Text Extension for Visual Studio Code, you can quickly and easily replace words in your text right within your favorite editor.
+Ever wanted to paste some text into an AI program, share a code snippet, or post on a forum, but it contained keywords or sensitive information you'd rather keep private? With the Obfuscator Extension for Visual Studio Code, you can quickly and easily replace words in your text right within your favorite editor.
 
 ## Features
 
@@ -14,14 +14,18 @@ Ever wanted to paste some text into an AI program, share a code snippet, or post
 
 1. Open your Visual Studio Code.
 2. Go to the Extensions view by clicking on the square icon on the sidebar.
-3. Search for "Obfuscate Text Extension".
+3. Search for "obfuscator".
 4. Click "Install".
 
 ## Usage
 
 1. Highlight the text you wish to obfuscate in your active editor.
-2. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate Text" and hit Enter.
+2. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate" and hit Enter.
 3. Follow the prompts to choose your settings and specify the words to replace.
+
+### Resetting the Obfuscator
+
+1. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate: reset" and hit Enter.
 
 ## How to Contribute
 
