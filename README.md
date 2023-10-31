@@ -1,71 +1,32 @@
-# obfuscator README
+# Obfuscate Text Extension for VS Code
 
-This is the README for your extension "obfuscator". After writing up a brief description, we recommend including the following sections.
+## Overview
+
+Ever wanted to paste some text into an AI program, share a code snippet, or post on a forum, but it contained keywords or sensitive information you'd rather keep private? With the Obfuscate Text Extension for Visual Studio Code, you can quickly and easily replace words in your text right within your favorite editor.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Case Sensitivity**: Choose whether your search is case sensitive or not.
+- **Command History**: Easily reuse previous commands without needing to type them again.
+- **Bulk Replacement**: Replace multiple words at once using a simple, intuitive format.
 
-For example if there is an image subfolder under your extension project workspace:
+## Installation
 
-\!\[feature X\]\(images/feature-x.png\)
+1. Open your Visual Studio Code.
+2. Go to the Extensions view by clicking on the square icon on the sidebar.
+3. Search for "Obfuscate Text Extension".
+4. Click "Install".
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Usage
 
-## Requirements
+1. Highlight the text you wish to obfuscate in your active editor.
+2. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate Text" and hit Enter.
+3. Follow the prompts to choose your settings and specify the words to replace.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## How to Contribute
 
-## Extension Settings
+We welcome contributions from the community! Feel free to submit issues and pull requests on our GitHub repository.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## License
 
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
