@@ -3,6 +3,7 @@
   "displayName": "obfuscator",
   "description": "Quickly obfuscate text by replacing specified keywords.",
   "version": "0.0.1",
+  "repository": "https://github.com/wozniakpl/obfuscator",
   "engines": {
     "vscode": "^1.83.0"
   },
