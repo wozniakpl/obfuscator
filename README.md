@@ -22,6 +22,8 @@ Ever wanted to paste some text into an AI program, share a code snippet, or post
 1. Highlight the text you wish to obfuscate in your active editor.
 2. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate" and hit Enter.
 3. Follow the prompts to choose your settings and specify the words to replace.
+  - **Replacement Format**: Use the format `from:to` to specify replacements. For example, entering `a:b` will replace every instance of `a` with `b`.
+
 
 ### Resetting the Obfuscator
 
