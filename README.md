@@ -24,10 +24,13 @@ Ever wanted to paste some text into an AI program, share a code snippet, or post
 3. Follow the prompts to choose your settings and specify the words to replace.
   - **Replacement Format**: Use the format `from:to` to specify replacements. For example, entering `a:b` will replace every instance of `a` with `b`.
 
-
 ### Resetting the Obfuscator
 
 1. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate: reset" and hit Enter.
+
+## Contributing
+
+See [vsc-extension-quickstart.md](vsc-extension-quickstart.md) for more information on how to get started with this project.
 
 ## How to Contribute
 
