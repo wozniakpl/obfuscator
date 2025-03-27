@@ -2,7 +2,7 @@
   "name": "obfuscator",
   "displayName": "obfuscator",
   "description": "Quickly obfuscate text by replacing specified keywords.",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "repository": "https://github.com/wozniakpl/obfuscator",
   "publisher": "BartoszWozniakSolutions",
   "engines": {
@@ -47,7 +47,7 @@
     "glob": "^10.3.3",
     "mocha": "^10.2.0",
     "ts-loader": "^9.4.4",
-    "typescript": "^5.2.2",
+    "typescript": "^5.8.2",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   },
