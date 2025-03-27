@@ -16,12 +16,20 @@
   "contributes": {
     "commands": [
       {
-          "command": "obfuscate.start",
-          "title": "Obfuscate"
+          "command": "obfuscate.selected",
+          "title": "Obfuscate: selected text"
       },
       {
           "command": "obfuscate.reset",
           "title": "Obfuscate: reset"
+      },
+      {
+        "command": "obfuscate.file",
+        "title": "Obfuscate: current file"
+      },
+      {
+        "command": "obfuscate.directory",
+        "title": "Obfuscate: directory"
       }
     ]
   },
