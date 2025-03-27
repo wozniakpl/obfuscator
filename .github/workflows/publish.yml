@@ -25,4 +25,4 @@ jobs:
         run: vsce package
       - name: Publish
         run: |
-          echo ${{ secrets.AZURE_PAT }} | vsce publish
+          VSCE_PAT=${{ secrets.AZURE_PAT }} vsce publish
