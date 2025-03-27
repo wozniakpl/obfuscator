@@ -6,7 +6,19 @@
 		{
 			"type": "npm",
 			"script": "watch",
-			"problemMatcher": "$ts-webpack-watch",
+			"problemMatcher": {
+				"owner": "custom",
+				"fileLocation": ["relative", "${workspaceFolder}"],
+				"pattern": {
+					"regexp": "^(.*)$",
+					"message": 1
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".*(Compiler starting).*",
+					"endsPattern": ".*(compiled successfully|Done).*"
+				}
+			},
 			"isBackground": true,
 			"presentation": {
 				"reveal": "never",
