@@ -28,6 +28,10 @@ Ever wanted to paste some text into an AI program, share a code snippet, or post
 
 1. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate: reset" and hit Enter.
 
+## Development
+
+Use `yarn` and check out the `package.json` file.
+
 ## Contributing
 
 See [vsc-extension-quickstart.md](vsc-extension-quickstart.md) for more information on how to get started with this project.
