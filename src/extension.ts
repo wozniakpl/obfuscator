@@ -4,20 +4,20 @@ export function activate(context: vscode.ExtensionContext) {
     let obfuscateCommand = vscode.commands.registerCommand('obfuscate.start', async () => {
         processText(context);
     });
-    let resetCommand = vscode.commands.registerCommand('obfuscate.reset', async () => {
-        resetPreferences(context);
+    let resetCommand = vscode.commands.registerCommand('obfuscate.selection', async () => {
+        // resetPreferences(context);
     });
 
     context.subscriptions.push(obfuscateCommand);
     context.subscriptions.push(resetCommand);
 }
 
-async function resetPreferences(context: vscode.ExtensionContext) {
-    await context.globalState.update('caseSensitive', '');
-    await context.globalState.update('userInput', '');
-    await context.globalState.update('commandHistory', []);
-    vscode.window.showInformationMessage('Obfuscate settings have been reset.');
-}
+// async function resetPreferences(context: vscode.ExtensionContext) {
+//     await context.globalState.update('caseSensitive', '');
+//     await context.globalState.update('userInput', '');
+//     await context.globalState.update('commandHistory', []);
+//     vscode.window.showInformationMessage('Obfuscate settings have been reset.');
+// }
 
 async function processText(context: vscode.ExtensionContext) {
     const activeEditor = vscode.window.activeTextEditor;
