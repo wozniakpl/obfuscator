@@ -1,23 +1,36 @@
-// A launch configuration that compiles the extension and then opens it inside a new window
-// Use IntelliSense to learn about possible attributes.
-// Hover to view descriptions of existing attributes.
-// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
 	"version": "0.2.0",
 	"configurations": [
-		{
-			"name": "Run Extension",
-			"type": "extensionHost",
-			"request": "launch",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
-			],
-			"outFiles": [
-				"${workspaceFolder}/dist/**/*.js"
-			],
-			"preLaunchTask": "${defaultBuildTask}"
-		}
-		// TODO: figure out how to run tests with F5
-		// until then - call `yarn test`
+	  // 🧪 Run extension normally
+	  {
+		"name": "Run Extension",
+		"type": "extensionHost",
+		"request": "launch",
+		"args": [
+		  "--extensionDevelopmentPath=${workspaceFolder}"
+		],
+		"outFiles": [
+		  "${workspaceFolder}/dist/**/*.js"
+		],
+		"preLaunchTask": "${defaultBuildTask}"
+	  },
+  
+	  // 🐞 Extension test debug with full breakpoint support
+	  {
+		"name": "Debug Extension Tests",
+		"type": "extensionHost",
+		"request": "launch",
+		"args": [
+		  "--extensionDevelopmentPath=${workspaceFolder}",
+		  "--extensionTestsPath=${workspaceFolder}/out/test/runTest.js"
+		],
+		"outFiles": [
+		  "${workspaceFolder}/out/**/*.js"
+		],
+		"sourceMaps": true,
+		"preLaunchTask": "npm: compile", // if you have a TS build step
+		"internalConsoleOptions": "openOnSessionStart"
+	  }
 	]
-}
+  }
+  
