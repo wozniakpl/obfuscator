@@ -1,101 +1,150 @@
+import path = require('path');
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as glob from 'glob';
+
+interface MappingRule {
+    [key: string]: string;
+}
+
+interface Mappings {
+    caseSensitive: boolean;
+    rules: MappingRule[];
+}
+
+interface Resource {
+    path: string;
+    recursive?: boolean;
+}
+
+interface Config {
+    mappings: Mappings;
+    resources: Resource[];
+}
 
 export function activate(context: vscode.ExtensionContext) {
+    console.error("FOO")
     let obfuscateCommand = vscode.commands.registerCommand('obfuscate.start', async () => {
-        processText(context);
+        return obfuscate(context);
     });
-    let resetCommand = vscode.commands.registerCommand('obfuscate.selection', async () => {
-        // resetPreferences(context);
+    let obfuscateSelectionCommand = vscode.commands.registerCommand('obfuscate.selection', async () => {
+        return obfuscateSelection(context);
     });
 
     context.subscriptions.push(obfuscateCommand);
-    context.subscriptions.push(resetCommand);
+    context.subscriptions.push(obfuscateSelectionCommand);
 }
 
-// async function resetPreferences(context: vscode.ExtensionContext) {
-//     await context.globalState.update('caseSensitive', '');
-//     await context.globalState.update('userInput', '');
-//     await context.globalState.update('commandHistory', []);
-//     vscode.window.showInformationMessage('Obfuscate settings have been reset.');
+function getConfig(): Config {
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+    if (!workspaceFolder) {
+        throw new Error('No workspace folder found');
+    }
+
+    const configPath = path.join(workspaceFolder.uri.fsPath, '.obfuscaterc.json');
+    if (!fs.existsSync(configPath)) {
+        throw new Error('Configuration file .obfuscaterc.json not found.');
+    }
+
+    try {
+        const configContent = fs.readFileSync(configPath, 'utf8');
+        return JSON.parse(configContent);
+    } catch (error) {
+        throw new Error('Invalid configuration file format.');
+    }
+}
+
+function validateConfig(config: Config) {
+    if (!config.mappings || !config.mappings.rules) {
+        throw new Error('Invalid configuration: missing mappings or rules');
+    }
+
+    if (!Array.isArray(config.mappings.rules)) {
+        throw new Error('Invalid configuration: rules must be an array');
+    }
+
+    if (!config.resources || !Array.isArray(config.resources)) {
+        throw new Error('Invalid configuration: resources must be an array');
+    }
+}
+
+function obfuscateText(text: string, mappings: Mappings): string {
+    let result = text;
+    
+    mappings.rules.forEach(rule => {
+        const [wordToReplace, replacement] = Object.entries(rule)[0];
+        const regex = new RegExp(
+            wordToReplace,
+            mappings.caseSensitive ? 'g' : 'gi'
+        );
+        result = result.replace(regex, replacement);
+    });
+
+    return result;
+}
+
+async function obfuscateSelection(context: vscode.ExtensionContext) {
+    console.error('DEBUG: obfuscateSelection');
+    const editor = vscode.window.activeTextEditor;
+    if (!editor || editor.selection.isEmpty) {
+        return 'No text selected. Please select text to obfuscate.';
+    }
+
+    try {
+        const config = getConfig();
+        validateConfig(config);
+
+        const text = editor.document.getText(editor.selection);
+        const obfuscatedText = obfuscateText(text, config.mappings);
+
+        await editor.edit(editBuilder => {
+            editBuilder.replace(editor.selection, obfuscatedText);
+        });
+
+        return undefined;
+    } catch (error) {
+        return error instanceof Error ? error.message : 'An error occurred';
+    }
+}
+
+// async function obfuscateResources(context: vscode.ExtensionContext, config: Config) {
+//     const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+//     if (!workspaceFolder) {
+//         throw new Error('No workspace folder found');
+//     }
+
+//     for (const resource of config.resources) {
+//         const pattern = path.join(workspaceFolder.uri.fsPath, resource.path);
+//         const files = glob.sync(pattern, { 
+//             ignore: ['**/node_modules/**'],
+//             dot: false,
+//             nodir: true
+//         });
+
+//         for (const file of files) {
+//             const content = fs.readFileSync(file, 'utf8');
+//             const obfuscatedContent = obfuscateText(content, config.mappings);
+//             fs.writeFileSync(file, obfuscatedContent);
+//         }
+//     }
 // }
 
-async function processText(context: vscode.ExtensionContext) {
-    const activeEditor = vscode.window.activeTextEditor;
+async function obfuscate(context: vscode.ExtensionContext) {
+    return 'xD';
+    // try {
+    //     const config = getConfig();
+    //     validateConfig(config);
 
-    if (activeEditor) {
-        let caseSensitive = context.globalState.get<string>('caseSensitive', '');
-        let commandHistory: string[] = context.globalState.get('commandHistory', []);
+    //     const editor = vscode.window.activeTextEditor;
+    //     if (editor && !editor.selection.isEmpty) {
+    //         return obfuscateSelection(context);
+    //     }
 
-        if (caseSensitive === '') {
-            const caseSensitiveOption = await vscode.window.showQuickPick(['Case Sensitive', 'Case Insensitive'], {
-                placeHolder: 'Do you want the search to be case sensitive?',
-            });
-
-            if (caseSensitiveOption === 'Case Insensitive') {
-                caseSensitive = 'false';
-            } else {
-                caseSensitive = 'true';
-            }
-
-            await context.globalState.update('caseSensitive', caseSensitive);
-        }
-
-        const selection = activeEditor.selection;
-        const highlightedText = activeEditor.document.getText(selection);
-
-        const quickPick = vscode.window.createQuickPick();
-        quickPick.items = commandHistory.map(label => ({ label }));
-        quickPick.matchOnDetail = true;
-        quickPick.placeholder = 'Select a previous command or type a new one';
-
-        quickPick.onDidAccept(async () => {
-            const userInput = quickPick.selectedItems.length > 0 ? quickPick.selectedItems[0].label : quickPick.value;
-            if (userInput !== undefined) {
-                processReplacementsAndHistory(userInput, highlightedText, activeEditor, selection, caseSensitive, context, commandHistory);
-            }
-            quickPick.dispose();
-        });
-
-        quickPick.show();
-    }
-}
-
-
-async function processReplacementsAndHistory(userInput: string, highlightedText: string, activeEditor: vscode.TextEditor, selection: vscode.Selection, caseSensitive: string, context: vscode.ExtensionContext, commandHistory: string[]) {
-    await context.globalState.update('userInput', userInput);
-    commandHistory = commandHistory.filter(cmd => cmd !== userInput);
-    commandHistory.unshift(userInput);
-    await context.globalState.update('commandHistory', commandHistory);
-
-    if (userInput !== '') {
-        const replacements = parseReplacements(userInput);
-        let newText = highlightedText;
-
-        for (const [word, newWord] of Object.entries(replacements)) {
-            const regex = new RegExp(word, caseSensitive === 'true' ? 'g' : 'gi');
-            newText = newText.replace(regex, newWord);
-        }
-
-        await activeEditor.edit((editBuilder) => {
-            editBuilder.replace(selection, newText);
-        });
-
-        processText(context);
-    }
-}
-
-function parseReplacements(input: string): { [key: string]: string } {
-    const pairs = input.split(',').map(s => s.trim());
-    const replacements: { [key: string]: string } = {};
-
-    for (const pair of pairs) {
-        const [word, newWord] = pair.split(':').map(s => s.trim());
-        if (word && newWord) {
-            replacements[word] = newWord;
-        }
-    }
-
-    return replacements;
+    //     await obfuscateResources(context, config);
+    //     return undefined;
+    // } catch (error) {
+    //     return error instanceof Error ? error.message : 'An error occurred';
+    // }
 }
 
 export function deactivate() {}
