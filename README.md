@@ -7,7 +7,6 @@ Ever wanted to paste some text into an AI program, share a code snippet, or post
 ## Features
 
 - **Case Sensitivity**: Choose whether your search is case sensitive or not.
-- **Command History**: Easily reuse previous commands without needing to type them again.
 - **Bulk Replacement**: Replace multiple words at once using a simple, intuitive format.
 
 ## Installation
@@ -19,14 +18,27 @@ Ever wanted to paste some text into an AI program, share a code snippet, or post
 
 ## Usage
 
-1. Highlight the text you wish to obfuscate in your active editor.
-2. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate" and hit Enter.
-3. Follow the prompts to choose your settings and specify the words to replace.
-  - **Replacement Format**: Use the format `from:to` to specify replacements. For example, entering `a:b` will replace every instance of `a` with `b`.
+1. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate: Configure" and hit Enter.
+2. This will open the `obfuscator.json` file located in the `.vscode` directory.
+3. Edit the file to define your obfuscation rules. The structure of the file is as follows:
 
-### Resetting the Obfuscator
+```json
+{
+    "caseSensitive": false, // Set to true if replacements should be case-sensitive
+    "rules": {
+        "realOrgName": "organization", // Replace "realOrgName" with "organization"
+        "projectName": "project" // Replace "projectName" with "project"
+    }
+}
+```
 
-1. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate: reset" and hit Enter.
+4. Save the file and highlight the text you wish to obfuscate in your active editor.
+5. Open the command palette (`Ctrl+Shift+P`) and type "Obfuscate" and hit Enter.
+
+### Error Handling
+
+- If no text is highlighted, the command will fail with an error message prompting you to select text.
+- If the `obfuscator.json` file does not exist, it will be created with default dummy content and opened for editing.
 
 ## Development
 

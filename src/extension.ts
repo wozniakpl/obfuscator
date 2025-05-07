@@ -1,101 +1,85 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as defaultConfig from './defaultConfig.json';
 
 export function activate(context: vscode.ExtensionContext) {
     let obfuscateCommand = vscode.commands.registerCommand('obfuscate.start', async () => {
-        processText(context);
+        processText();
     });
-    let resetCommand = vscode.commands.registerCommand('obfuscate.reset', async () => {
-        resetPreferences(context);
+    let configureCommand = vscode.commands.registerCommand('obfuscate.configure', async () => {
+        const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+        if (!workspaceFolder) {
+            vscode.window.showErrorMessage('No workspace folder found.');
+            return;
+        }
+
+        const configPath = path.join(workspaceFolder, '.vscode', 'obfuscator.json');
+        if (!fs.existsSync(configPath)) {
+            fs.mkdirSync(path.dirname(configPath), { recursive: true });
+            fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 4));
+        }
+
+        const document = await vscode.workspace.openTextDocument(configPath);
+        await vscode.window.showTextDocument(document);
+        vscode.window.showInformationMessage('Opened obfuscator.json for configuration.');
     });
 
+    context.subscriptions.push(configureCommand);
     context.subscriptions.push(obfuscateCommand);
-    context.subscriptions.push(resetCommand);
 }
 
-async function resetPreferences(context: vscode.ExtensionContext) {
-    await context.globalState.update('caseSensitive', '');
-    await context.globalState.update('userInput', '');
-    await context.globalState.update('commandHistory', []);
-    vscode.window.showInformationMessage('Obfuscate settings have been reset.');
-}
-
-async function processText(context: vscode.ExtensionContext) {
+async function processText() {
     const activeEditor = vscode.window.activeTextEditor;
 
-    if (activeEditor) {
-        let caseSensitive = context.globalState.get<string>('caseSensitive', '');
-        let commandHistory: string[] = context.globalState.get('commandHistory', []);
-
-        if (caseSensitive === '') {
-            const caseSensitiveOption = await vscode.window.showQuickPick(['Case Sensitive', 'Case Insensitive'], {
-                placeHolder: 'Do you want the search to be case sensitive?',
-            });
-
-            if (caseSensitiveOption === 'Case Insensitive') {
-                caseSensitive = 'false';
-            } else {
-                caseSensitive = 'true';
-            }
-
-            await context.globalState.update('caseSensitive', caseSensitive);
-        }
-
-        const selection = activeEditor.selection;
-        const highlightedText = activeEditor.document.getText(selection);
-
-        const quickPick = vscode.window.createQuickPick();
-        quickPick.items = commandHistory.map(label => ({ label }));
-        quickPick.matchOnDetail = true;
-        quickPick.placeholder = 'Select a previous command or type a new one';
-
-        quickPick.onDidAccept(async () => {
-            const userInput = quickPick.selectedItems.length > 0 ? quickPick.selectedItems[0].label : quickPick.value;
-            if (userInput !== undefined) {
-                processReplacementsAndHistory(userInput, highlightedText, activeEditor, selection, caseSensitive, context, commandHistory);
-            }
-            quickPick.dispose();
-        });
-
-        quickPick.show();
-    }
-}
-
-
-async function processReplacementsAndHistory(userInput: string, highlightedText: string, activeEditor: vscode.TextEditor, selection: vscode.Selection, caseSensitive: string, context: vscode.ExtensionContext, commandHistory: string[]) {
-    await context.globalState.update('userInput', userInput);
-    commandHistory = commandHistory.filter(cmd => cmd !== userInput);
-    commandHistory.unshift(userInput);
-    await context.globalState.update('commandHistory', commandHistory);
-
-    if (userInput !== '') {
-        const replacements = parseReplacements(userInput);
-        let newText = highlightedText;
-
-        for (const [word, newWord] of Object.entries(replacements)) {
-            const regex = new RegExp(word, caseSensitive === 'true' ? 'g' : 'gi');
-            newText = newText.replace(regex, newWord);
-        }
-
-        await activeEditor.edit((editBuilder) => {
-            editBuilder.replace(selection, newText);
-        });
-
-        processText(context);
-    }
-}
-
-function parseReplacements(input: string): { [key: string]: string } {
-    const pairs = input.split(',').map(s => s.trim());
-    const replacements: { [key: string]: string } = {};
-
-    for (const pair of pairs) {
-        const [word, newWord] = pair.split(':').map(s => s.trim());
-        if (word && newWord) {
-            replacements[word] = newWord;
-        }
+    if (!activeEditor) {
+        vscode.window.showErrorMessage('No active editor found.');
+        return;
     }
 
-    return replacements;
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!workspaceFolder) {
+        vscode.window.showErrorMessage('No workspace folder found.');
+        return;
+    }
+
+    const configPath = path.join(workspaceFolder, '.vscode', 'obfuscator.json');
+    if (!fs.existsSync(configPath)) {
+        fs.mkdirSync(path.dirname(configPath), { recursive: true });
+        fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 4));
+        const document = await vscode.workspace.openTextDocument(configPath);
+        await vscode.window.showTextDocument(document);
+        vscode.window.showInformationMessage('Created obfuscator.json. Please edit it to define your obfuscation rules.');
+        return;
+    }
+
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+    const { caseSensitive, rules } = config;
+
+    if (!rules || typeof rules !== 'object') {
+        vscode.window.showErrorMessage('Invalid or missing "rules" in obfuscator.json.');
+        return;
+    }
+
+    const selection = activeEditor.selection;
+    if (selection.isEmpty) {
+        vscode.window.showErrorMessage('No text selected. Please select text to obfuscate.');
+        return;
+    }
+
+    const highlightedText = activeEditor.document.getText(selection);
+
+    let newText = highlightedText;
+    for (const [word, newWord] of Object.entries(rules)) {
+        const regex = new RegExp(word, caseSensitive ? 'g' : 'gi');
+        newText = newText.replace(regex, String(newWord));
+    }
+
+    await activeEditor.edit((editBuilder) => {
+        editBuilder.replace(selection, newText);
+    });
+
+    vscode.window.showInformationMessage('Text obfuscated successfully.');
 }
 
 export function deactivate() {}
