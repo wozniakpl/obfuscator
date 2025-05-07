@@ -53,7 +53,15 @@ async function processText() {
         return;
     }
 
-    const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+    let config;
+    try {
+        const configContent = fs.readFileSync(configPath, 'utf-8');
+        config = JSON.parse(configContent);
+    } catch (error) {
+        vscode.window.showErrorMessage('Invalid or empty obfuscator.json file. Please fix it and try again.');
+        return;
+    }
+
     const { caseSensitive, rules } = config;
 
     if (!rules || typeof rules !== 'object') {

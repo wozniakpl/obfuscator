@@ -19,8 +19,8 @@
         "title": "Obfuscate"
       },
       {
-        "command": "obfuscate.reset",
-        "title": "Obfuscate: reset"
+        "command": "obfuscate.configure",
+        "title": "Obfuscate: configure"
       }
     ]
   },
