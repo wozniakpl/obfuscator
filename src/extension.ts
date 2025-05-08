@@ -77,15 +77,22 @@ async function processText() {
 
     const highlightedText = activeEditor.document.getText(selection);
 
+    console.log('Obfuscation rules:', rules);
+    console.log('Original highlighted text:', highlightedText);
+
     let newText = highlightedText;
     for (const [word, newWord] of Object.entries(rules)) {
-        const regex = new RegExp(word, caseSensitive ? 'g' : 'gi');
+        // Escape regex special characters in the word
+        const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(escapedWord, caseSensitive ? 'g' : 'gi');
         newText = newText.replace(regex, String(newWord));
+        console.log(`After replacing '${word}' with '${newWord}':`, newText);
     }
 
-    await activeEditor.edit((editBuilder) => {
+    const editSuccess = await activeEditor.edit((editBuilder) => {
         editBuilder.replace(selection, newText);
     });
+    console.log('Edit operation success:', editSuccess);
 
     vscode.window.showInformationMessage('Text obfuscated successfully.');
 }

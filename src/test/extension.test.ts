@@ -109,4 +109,56 @@ suite('Extension Test Suite', () => {
         // Restore the spy
         showErrorMessageSpy.restore();
     });
+
+    test('Obfuscate command should replace highlighted text according to obfuscator.json', async () => {
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+        if (!workspaceFolders || workspaceFolders.length === 0) {
+            const uri = vscode.Uri.file(path.resolve(__dirname, '../../'));
+            await vscode.workspace.updateWorkspaceFolders(0, 0, { uri });
+        }
+
+        const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+        assert.ok(workspaceFolder, 'No workspace folder found.');
+
+        const configPath = path.join(workspaceFolder, '.vscode', 'obfuscator.json');
+
+        // Ensure the config file exists with known rules
+        const config = {
+            caseSensitive: false,
+            rules: {
+                realOrgName: 'organization',
+                projectName: 'project',
+                secret: '***'
+            }
+        };
+        fs.mkdirSync(path.dirname(configPath), { recursive: true });
+        fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
+
+        // Open a new untitled document with text containing the keywords
+        const testText = 'This is the realOrgName and the projectName. Do not share the secret!';
+        const document = await vscode.workspace.openTextDocument({ content: testText });
+        const editor = await vscode.window.showTextDocument(document);
+
+        // Select the whole text
+        editor.selection = new vscode.Selection(
+            document.positionAt(0),
+            document.positionAt(testText.length)
+        );
+
+        // Execute the obfuscate command
+        await vscode.commands.executeCommand('obfuscate.start');
+
+        // Wait for the edit operation to complete
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // Get the updated text
+        const updatedText = document.getText();
+        assert.notStrictEqual(updatedText, testText, 'Text was not changed by obfuscate command');
+        assert.ok(updatedText.includes('organization'), 'Expected replacement for realOrgName not found');
+        assert.ok(updatedText.includes('project'), 'Expected replacement for projectName not found');
+        assert.ok(updatedText.includes('***'), 'Expected replacement for secret not found');
+        assert.ok(!updatedText.includes('realOrgName'), 'realOrgName was not replaced');
+        assert.ok(!updatedText.includes('projectName'), 'projectName was not replaced');
+        assert.ok(!updatedText.includes('secret'), 'secret was not replaced');
+    });
 });
