@@ -1,0 +1,7 @@
+{
+    "caseSensitive": false,
+    "rules": {
+        "realOrgName": "organization",
+        "projectName": "project"
+    }
+}

@@ -2,7 +2,7 @@
   "name": "obfuscator",
   "displayName": "obfuscator",
   "description": "Quickly obfuscate text by replacing specified keywords.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": "https://github.com/wozniakpl/obfuscator",
   "publisher": "BartoszWozniakSolutions",
   "engines": {
@@ -19,8 +19,8 @@
         "title": "Obfuscate"
       },
       {
-        "command": "obfuscate.reset",
-        "title": "Obfuscate: reset"
+        "command": "obfuscate.configure",
+        "title": "Obfuscate: configure"
       }
     ]
   },
@@ -38,6 +38,7 @@
   "devDependencies": {
     "@types/mocha": "^10.0.2",
     "@types/node": "18.x",
+    "@types/sinon": "^17.0.4",
     "@types/vscode": "^1.83.0",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
     "@typescript-eslint/parser": "^6.7.3",
@@ -46,8 +47,9 @@
     "eslint": "^8.50.0",
     "glob": "^10.3.3",
     "mocha": "^10.2.0",
+    "sinon": "^20.0.0",
     "ts-loader": "^9.4.4",
-    "typescript": "^5.8.2",
+    "typescript": "^5.8.3",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   },
