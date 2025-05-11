@@ -6,7 +6,7 @@ module.exports = defineConfig([
     label: 'unitTests',
     files: 'out/test/**/*.test.js',
     version: 'insiders',
-    workspaceFolder: './',
+    workspaceFolder: './vscode-test',
     mocha: {
       ui: 'tdd',
       timeout: 20000
