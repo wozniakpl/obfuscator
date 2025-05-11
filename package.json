@@ -37,21 +37,21 @@
   },
   "devDependencies": {
     "@types/mocha": "^10.0.2",
-    "@types/node": "18.x",
+    "@types/node": "22.15.9",
     "@types/sinon": "^17.0.4",
     "@types/vscode": "^1.83.0",
-    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^6.7.3",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "eslint": "^8.50.0",
-    "glob": "^10.3.3",
-    "mocha": "^10.2.0",
+    "glob": "^11.0.2",
+    "mocha": "^11.2.2",
     "sinon": "^20.0.0",
     "ts-loader": "^9.4.4",
     "typescript": "^5.8.3",
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^6.0.1"
   },
   "dependencies": {
     "tsc": "^2.0.4"
