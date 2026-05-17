@@ -1,0 +1,23 @@
+name: Publish to VS Code Marketplace
+description: Package and publish the VS Code extension using vsce
+
+inputs:
+  azure-pat:
+    description: Azure PAT for vsce authentication
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - shell: bash
+      env:
+        VSCE_PAT: ${{ inputs.azure-pat }}
+      run: |
+        npm install -g yarn
+        yarn global add @vscode/vsce
+        yarn
+        vsce package
+        vsce publish
