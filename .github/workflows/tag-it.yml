@@ -18,7 +18,23 @@ jobs:
         with:
           fetch-depth: 0
       - uses: wozniakpl/tag-it@v1
+        id: tag-it
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           create-release: 'true'
           pre-release-command: 'npm version $NEW_VERSION --no-git-tag-version'
+      - name: Set up Node.js
+        if: steps.tag-it.outputs.new-tag != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Publish to VS Code Marketplace
+        if: steps.tag-it.outputs.new-tag != ''
+        env:
+          VSCE_PAT: ${{ secrets.AZURE_PAT }}
+        run: |
+          npm install -g yarn
+          yarn global add @vscode/vsce
+          yarn
+          vsce package
+          vsce publish
