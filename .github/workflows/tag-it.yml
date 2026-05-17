@@ -13,6 +13,8 @@ permissions:
 jobs:
   tag-it:
     runs-on: ubuntu-latest
+    outputs:
+      new-tag: ${{ steps.tag-it.outputs.new-tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,8 +25,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           create-release: 'true'
           pre-release-command: 'npm version $NEW_VERSION --no-git-tag-version'
-      - name: Publish to VS Code Marketplace
-        if: steps.tag-it.outputs.new-tag != ''
-        uses: ./.github/actions/vsce-publish
+
+  publish:
+    needs: tag-it
+    if: needs.tag-it.outputs.new-tag != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/vsce-publish
         with:
           azure-pat: ${{ secrets.AZURE_PAT }}
