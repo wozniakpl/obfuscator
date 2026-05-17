@@ -30,9 +30,11 @@ jobs:
           node-version: '20'
       - name: Publish to VS Code Marketplace
         if: steps.tag-it.outputs.new-tag != ''
+        env:
+          VSCE_PAT: ${{ secrets.AZURE_PAT }}
         run: |
           npm install -g yarn
           yarn global add @vscode/vsce
           yarn
           vsce package
-          VSCE_PAT=${{ secrets.AZURE_PAT }} vsce publish
+          vsce publish
