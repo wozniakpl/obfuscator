@@ -11,7 +11,7 @@ runs:
   steps:
     - uses: actions/setup-node@v6
       with:
-        node-version: '20'
+        node-version: '24'
     - shell: bash
       env:
         VSCE_PAT: ${{ inputs.azure-pat }}
