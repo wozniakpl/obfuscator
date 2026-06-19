@@ -16,7 +16,7 @@ jobs:
     outputs:
       new-tag: ${{ steps.tag-it.outputs.new-tag }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: wozniakpl/tag-it@v1
@@ -31,7 +31,7 @@ jobs:
     if: needs.tag-it.outputs.new-tag != ''
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/vsce-publish
         with:
           azure-pat: ${{ secrets.AZURE_PAT }}
